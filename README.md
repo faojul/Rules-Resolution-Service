@@ -6,11 +6,13 @@ A backend service that resolves workflow configuration using a **multi-dimension
 
 ## 🚀 Features
 
+- Clean Architecture
+- Swagger for API display & Testing
 - Specificity-based override resolution (similar to CSS cascade)
 - Multi-dimensional selector (state, client, investor, caseType)
 - Effective date handling (`effectiveDate`, `expiresDate`)
 - Conflict detection between overrides
-- Explain API for debugging resolution decisions
+- Explain the API for debugging resolution decisions
 - Override CRUD operations
 - Seed data support (steps, defaults, overrides)
 
@@ -56,4 +58,25 @@ docker-compose up -d
 ````
 
 📡 APIs
-
+## Resolve Configuration
+```http
+POST /api/resolve
+````
+## Explain Resolution
+```http
+POST /api/resolve/explain
+````
+## Override APIs
+```http
+GET    /api/overrides
+GET    /api/overrides/{id}
+POST   /api/overrides
+PUT    /api/overrides/{id}
+PATCH  /api/overrides/{id}/status
+````
+## Conflict Detection
+```http
+GET /api/overrides/conflicts
+````
+## 📌 Status
+This implementation covers core requirements, including resolution, conflict detection, and override management. Some optimizations and advanced features can be further extended.
