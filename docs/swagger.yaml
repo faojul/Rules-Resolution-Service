@@ -1,0 +1,322 @@
+basePath: /
+definitions:
+  domain.Context:
+    properties:
+      asOfDate:
+        type: string
+      caseType:
+        type: string
+      client:
+        type: string
+      investor:
+        type: string
+      state:
+        type: string
+    type: object
+  domain.Override:
+    properties:
+      createdAt:
+        type: string
+      effectiveDate:
+        type: string
+      expiresDate:
+        type: string
+      id:
+        type: string
+      selector:
+        additionalProperties:
+          type: string
+        type: object
+      specificity:
+        type: integer
+      status:
+        type: string
+      stepKey:
+        type: string
+      traitKey:
+        type: string
+      updatedAt:
+        type: string
+      value: {}
+    type: object
+  handler.UpdateStatusRequest:
+    properties:
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for resolving rule overrides
+  title: Rules Resolution Service API
+  version: "1.0"
+paths:
+  /api/overrides/conflicts:
+    get:
+      description: Retrieve all rule conflicts detected in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: conflicts response
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Get conflicts
+      tags:
+      - Conflicts
+  /api/explain:
+    post:
+      consumes:
+      - application/json
+      description: Explain how a rule was resolved (step-by-step reasoning)
+      parameters:
+      - description: Resolution context
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Context'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: explanation result
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Explain resolution
+      tags:
+      - Explain
+  /api/overrides:
+    get:
+      consumes:
+      - application/json
+      description: Get list of overrides with optional filters
+      parameters:
+      - description: State
+        in: query
+        name: state
+        type: string
+      - description: Client
+        in: query
+        name: client
+        type: string
+      - description: Investor
+        in: query
+        name: investor
+        type: string
+      - description: Case Type
+        in: query
+        name: caseType
+        type: string
+      - description: Step Key
+        in: query
+        name: stepKey
+        type: string
+      - description: Trait Key
+        in: query
+        name: traitKey
+        type: string
+      - description: Status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Override'
+            type: array
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: List overrides
+      tags:
+      - Overrides
+    post:
+      consumes:
+      - application/json
+      description: Create a new override
+      parameters:
+      - description: Override payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Override'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: created
+          schema:
+            type: string
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Create override
+      tags:
+      - Overrides
+  /api/overrides/{id}:
+    get:
+      description: Get a single override by its ID
+      parameters:
+      - description: Override ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Override'
+        "404":
+          description: not found
+          schema:
+            type: string
+      summary: Get override by ID
+      tags:
+      - Overrides
+    put:
+      consumes:
+      - application/json
+      description: Update an existing override
+      parameters:
+      - description: Override ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Override payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Override'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated
+          schema:
+            type: string
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Update override
+      tags:
+      - Overrides
+  /api/overrides/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Update only the status of an override
+      parameters:
+      - description: Override ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Status payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Update override status
+      tags:
+      - Overrides
+  /api/resolve:
+    post:
+      consumes:
+      - application/json
+      description: Resolve rules bulk based on input contexts
+      parameters:
+      - description: Resolution contexts
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/domain.Context'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: resolved result
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Resolve rules in Bulk
+      tags:
+      - Bulk Resolve
+  /health:
+    get:
+      description: Check if the service is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: status ok
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - Health
+swagger: "2.0"

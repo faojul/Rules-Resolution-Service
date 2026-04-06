@@ -1,0 +1,488 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for resolving rule overrides",
+        "title": "Rules Resolution Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/overrides/conflicts": {
+            "get": {
+                "description": "Retrieve all rule conflicts detected in the system",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Conflicts"
+                ],
+                "summary": "Get conflicts",
+                "responses": {
+                    "200": {
+                        "description": "conflicts response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/explain": {
+            "post": {
+                "description": "Explain how a rule was resolved (step-by-step reasoning)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Explain"
+                ],
+                "summary": "Explain resolution",
+                "parameters": [
+                    {
+                        "description": "Resolution context",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Context"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "explanation result",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/overrides": {
+            "get": {
+                "description": "Get list of overrides with optional filters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Overrides"
+                ],
+                "summary": "List overrides",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "State",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Client",
+                        "name": "client",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Investor",
+                        "name": "investor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Case Type",
+                        "name": "caseType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Step Key",
+                        "name": "stepKey",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Trait Key",
+                        "name": "traitKey",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Override"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new override",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Overrides"
+                ],
+                "summary": "Create override",
+                "parameters": [
+                    {
+                        "description": "Override payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Override"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/overrides/{id}": {
+            "get": {
+                "description": "Get a single override by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Overrides"
+                ],
+                "summary": "Get override by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Override ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Override"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing override",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Overrides"
+                ],
+                "summary": "Update override",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Override ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Override payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Override"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/overrides/{id}/status": {
+            "patch": {
+                "description": "Update only the status of an override",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Overrides"
+                ],
+                "summary": "Update override status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Override ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Status payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/resolve": {
+            "post": {
+                "description": "Resolve rules bulk based on input contexts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bulk Resolve"
+                ],
+                "summary": "Resolve rules in Bulk",
+                "parameters": [
+                    {
+                        "description": "Resolution contexts",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Context"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "resolved result",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Check if the service is running",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "status ok",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.Context": {
+            "type": "object",
+            "properties": {
+                "asOfDate": {
+                    "type": "string"
+                },
+                "caseType": {
+                    "type": "string"
+                },
+                "client": {
+                    "type": "string"
+                },
+                "investor": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Override": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "effectiveDate": {
+                    "type": "string"
+                },
+                "expiresDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "selector": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "specificity": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "stepKey": {
+                    "type": "string"
+                },
+                "traitKey": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "value": {}
+            }
+        },
+        "handler.UpdateStatusRequest": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
