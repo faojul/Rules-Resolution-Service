@@ -16,7 +16,17 @@ type ExplainHandler struct {
 func NewExplainHandler(resolver *service.Resolver) *ExplainHandler {
     return &ExplainHandler{resolver: resolver}
 }
-
+// Explain godoc
+// @Summary Explain resolution
+// @Description Explain how a rule was resolved (step-by-step reasoning)
+// @Tags Explain
+// @Accept json
+// @Produce json
+// @Param request body domain.Context true "Resolution context"
+// @Success 200 {object} map[string]interface{} "explanation result"
+// @Failure 400 {string} string "invalid request"
+// @Failure 500 {string} string "internal server error"
+// @Router /api/explain [post]
 func (h *ExplainHandler) Explain(w http.ResponseWriter, r *http.Request) {
 
     var ctx domain.Context
