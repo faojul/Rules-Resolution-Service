@@ -3,21 +3,19 @@ package db
 import (
 	"context"
 	"log"
-	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPostgres() *pgxpool.Pool {
-    url := os.Getenv("DATABASE_URL")
-    if url == "" {
-        url = "postgres://postgres:postgres@db:5432/rules"
-    }
+func Connect(url string) *pgxpool.Pool {
+	if url == "" {
+		url = "postgres://spine:spine@postgres:5432/rules_resolution?sslmode=disable"
+	}
 
-    pool, err := pgxpool.New(context.Background(), url)
-    if err != nil {
-        log.Fatal(err)
-    }
+	pool, err := pgxpool.New(context.Background(), url)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    return pool
+	return pool
 }

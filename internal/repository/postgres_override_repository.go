@@ -20,7 +20,7 @@ func NewPostgresOverrideRepository(db *pgxpool.Pool) *PostgresOverrideRepository
 func (r *PostgresOverrideRepository) FindByStepAndTrait(ctx context.Context, step, trait string) ([]domain.Override, error) {
 
     query := `
-    SELECT id, step_key, trait_key, state, client, investor, case_type,
+    SELECT id, step_key, trait_key, selector,
            value, specificity, effective_date, expires_date, status
     FROM overrides
     WHERE step_key=$1 AND trait_key=$2
@@ -40,10 +40,7 @@ func (r *PostgresOverrideRepository) FindByStepAndTrait(ctx context.Context, ste
             &o.ID,
             &o.StepKey,
             &o.TraitKey,
-            &o.State,
-            &o.Client,
-            &o.Investor,
-            &o.CaseType,
+            &o.Selector,
             &o.Value,
             &o.Specificity,
             &o.EffectiveDate,
@@ -62,7 +59,7 @@ func (r *PostgresOverrideRepository) FindByStepAndTrait(ctx context.Context, ste
 func (r *PostgresOverrideRepository) FindAllOverrides(ctx context.Context) ([]domain.Override, error) {
 
     query := `
-    SELECT id, step_key, trait_key, state, client, investor, case_type,
+    SELECT id, step_key, trait_key, selector,
            value, specificity, effective_date, expires_date, status
     FROM overrides
     WHERE status = 'active'
@@ -82,10 +79,7 @@ func (r *PostgresOverrideRepository) FindAllOverrides(ctx context.Context) ([]do
             &o.ID,
             &o.StepKey,
             &o.TraitKey,
-            &o.State,
-            &o.Client,
-            &o.Investor,
-            &o.CaseType,
+            &o.Selector,
             &o.Value,
             &o.Specificity,
             &o.EffectiveDate,
@@ -108,10 +102,7 @@ func scanOverride(rows Scanner) (domain.Override, error) {
 		&o.ID,
 		&o.StepKey,
 		&o.TraitKey,
-		&o.State,
-		&o.Client,
-		&o.Investor,
-		&o.CaseType,
+		&o.Selector,
 		&o.Value,
 		&o.Specificity,
 		&o.EffectiveDate,
@@ -134,7 +125,7 @@ func (r *PostgresOverrideRepository) List(
 ) ([]domain.Override, error) {
 
 	query := `
-	SELECT id, step_key, trait_key, state, client, investor, case_type,
+	SELECT id, step_key, trait_key, selector,
 	       value, specificity, effective_date, expires_date, status,
 	       created_at, updated_at
 	FROM overrides
@@ -199,13 +190,13 @@ func (r *PostgresOverrideRepository) Create(
 	query := `
 	INSERT INTO overrides (
 		id, step_key, trait_key,
-		state, client, investor, case_type,
+		selector,
 		value, specificity,
 		effective_date, expires_date,
 		status,
 		created_at, updated_at
 	)
-	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
 	`
 
 	valueJSON, _ := json.Marshal(o.Value)
@@ -214,10 +205,7 @@ func (r *PostgresOverrideRepository) Create(
 		o.ID,
 		o.StepKey,
 		o.TraitKey,
-		o.State,
-		o.Client,
-		o.Investor,
-		o.CaseType,
+		o.Selector,
 		valueJSON,
 		o.Specificity,
 		o.EffectiveDate,
@@ -239,16 +227,13 @@ func (r *PostgresOverrideRepository) Update(
 	UPDATE overrides
 	SET step_key=$2,
 	    trait_key=$3,
-	    state=$4,
-	    client=$5,
-	    investor=$6,
-	    case_type=$7,
-	    value=$8,
-	    specificity=$9,
-	    effective_date=$10,
-	    expires_date=$11,
-	    status=$12,
-	    updated_at=$13
+	    selector=$4,
+	    value=$5,
+	    specificity=$6,
+	    effective_date=$7,
+	    expires_date=$8,
+	    status=$9,
+	    updated_at=$10
 	WHERE id=$1
 	`
 
@@ -258,10 +243,7 @@ func (r *PostgresOverrideRepository) Update(
 		o.ID,
 		o.StepKey,
 		o.TraitKey,
-		o.State,
-		o.Client,
-		o.Investor,
-		o.CaseType,
+		o.Selector,
 		valueJSON,
 		o.Specificity,
 		o.EffectiveDate,
@@ -365,7 +347,7 @@ func (r *PostgresOverrideRepository) GetByID(
 ) (*domain.Override, error) {
 
 	query := `
-	SELECT id, step_key, trait_key, state, client, investor, case_type,
+	SELECT id, step_key, trait_key, selector,
 	       value, specificity, effective_date, expires_date, status,
 	       created_at, updated_at
 	FROM overrides
