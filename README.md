@@ -4,7 +4,7 @@ A backend service that resolves workflow configuration using a **multi-dimension
 
 ---
 
-## 🚀 Features
+## Features
 
 - Clean Architecture
 - Swagger for API display & Testing
@@ -18,7 +18,7 @@ A backend service that resolves workflow configuration using a **multi-dimension
 
 ---
 
-## 🧠 Core Concept
+## Core Concept
 
 Instead of maintaining multiple workflows, the system uses:
 
@@ -33,7 +33,7 @@ Resolution is based on:
 
 ---
 
-## 🏗 Architecture
+## Architecture
 `Handler → Service → Repository → PostgreSQL`
 
 
@@ -44,7 +44,7 @@ Resolution is based on:
 
 ---
 
-## ⚙️ Setup & Run
+## Setup & Run
 
 ### 1. Clone repository
 
@@ -57,7 +57,7 @@ cd rules-resolution-service
 docker-compose up -d
 ````
 
-📡 APIs
+# APIs
 ## Resolve Configuration
 ```http
 POST /api/resolve
@@ -78,5 +78,5 @@ PATCH  /api/overrides/{id}/status
 ```http
 GET /api/overrides/conflicts
 ````
-## 📌 Status
+## Status
 This implementation covers core requirements, including resolution, conflict detection, and override management. Some optimizations and advanced features can be further extended.
