@@ -42,7 +42,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/explain": {
+        "/api/resolve/explain": {
             "post": {
                 "description": "Explain how a rule was resolved (step-by-step reasoning)",
                 "consumes": [
