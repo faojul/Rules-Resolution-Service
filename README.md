@@ -1,46 +1,59 @@
 # Rules Resolution Service (Go + PostgreSQL)
 
-A backend service that resolves configuration using a **multi-dimensional override system**, inspired by CSS specificity.
-
-## 🚀 Features
-
-- Specificity-based override resolution (0–4 dimensions)
-- Effective date filtering (`effectiveDate`, `expiresDate`)
-- Conflict detection between overrides
-- Explain API for debugging resolution
-- Override CRUD with audit trail
-- Bulk resolution support
+A backend service that resolves workflow configuration using a **multi-dimensional override system**, based on specificity ranking.
 
 ---
 
-## 🧠 Core Idea
+## 🚀 Features
 
-Instead of maintaining multiple workflows, we define:
-- **Defaults** (base config)
-- **Overrides** (context-specific changes)
+- Specificity-based override resolution (similar to CSS cascade)
+- Multi-dimensional selector (state, client, investor, caseType)
+- Effective date handling (`effectiveDate`, `expiresDate`)
+- Conflict detection between overrides
+- Explain API for debugging resolution decisions
+- Override CRUD operations
+- Seed data support (steps, defaults, overrides)
+
+---
+
+## 🧠 Core Concept
+
+Instead of maintaining multiple workflows, the system uses:
+
+- **Defaults** → base configuration  
+- **Overrides** → context-specific changes  
 
 Resolution is based on:
+
 1. Matching selector
 2. Highest specificity
 3. Latest effective date
 
 ---
 
-## 📦 Tech Stack
+## 🏗 Architecture
+`Handler → Service → Repository → PostgreSQL`
 
-- Go 1.21+
-- PostgreSQL
-- pgxpool
-- chi router
+
+- **Handler** → HTTP layer
+- **Service** → business logic
+- **Repository** → DB interaction
+- **Resolver** → core rule evaluation logic
 
 ---
 
-## ⚙️ Run Locally
+## ⚙️ Setup & Run
+
+### 1. Clone repository
 
 ```bash
-git clone <repo>
-cd project
-
+git clone <your-repo>
+cd rules-resolution-service
+````
+### 2. Start the app
+```bash
 docker-compose up -d
+````
 
-go run cmd/main.go
+📡 APIs
+
