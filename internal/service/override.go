@@ -32,14 +32,14 @@ func (s *OverrideService) GetByID(id string) (*domain.Override, error) {
 
 func (s *OverrideService) Create(o domain.Override) (*domain.Override, error) {
 
-	// ✅ validation
+	// validation
 	if err := validateOverride(o); err != nil {
 		return nil, err
 	}
 
 	now := time.Now()
 
-	o.Specificity = computeSpecificity(o)
+	o.Specificity = domain.ComputeSpecificity(o.Selector)
 	o.CreatedAt = &now
 	o.UpdatedAt = &now
 
@@ -70,7 +70,7 @@ func (s *OverrideService) Update(o domain.Override) (*domain.Override, error) {
 		return nil, err
 	}
 
-	o.Specificity = computeSpecificity(o)
+	o.Specificity = domain.ComputeSpecificity(o.Selector)
 	o.CreatedAt = existing.CreatedAt
 		now := time.Now()
 		o.UpdatedAt = &now
@@ -128,21 +128,6 @@ func validateOverride(o domain.Override) error {
 	return nil
 }
 
-func computeSpecificity(o domain.Override) int {
-	count := 0
-
-	if o.State != nil {
-		count++
-	}
-	if o.Client != nil {
-		count++
-	}
-	if o.Investor != nil {
-		count++
-	}
-	if o.CaseType != nil {
-		count++
-	}
-
-	return count
+func (s *OverrideService) UpdateStatus(id string, status string) error {
+	return s.repo.UpdateStatus(context.Background(), id, status)
 }

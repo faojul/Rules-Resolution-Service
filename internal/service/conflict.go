@@ -76,21 +76,17 @@ func dateOverlap(a, b domain.Override) bool {
 }
 
 func selectorOverlap(a, b domain.Override) bool {
+	for key, valA := range a.Selector {
 
-    if !fieldOverlap(a.State, b.State) {
-        return false
-    }
-    if !fieldOverlap(a.Client, b.Client) {
-        return false
-    }
-    if !fieldOverlap(a.Investor, b.Investor) {
-        return false
-    }
-    if !fieldOverlap(a.CaseType, b.CaseType) {
-        return false
-    }
+		if valB, ok := b.Selector[key]; ok {
+			// both define this dimension → must match
+			if valA != valB {
+				return false
+			}
+		}
+	}
 
-    return true
+	return true
 }
 
 func fieldOverlap(a, b *string) bool {

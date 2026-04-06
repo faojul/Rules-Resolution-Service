@@ -1,29 +1,28 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type Override struct {
-    ID string
+	ID string `json:"id"`
 
-    StepKey  string
-    TraitKey string
+	StepKey  string `json:"stepKey"`
+	TraitKey string `json:"traitKey"`
 
-    State    *string
-    Client   *string
-    Investor *string
-    CaseType *string
+	Selector map[string]string `json:"selector"`
 
-    Value any
+	Value any `json:"value"`
 
-    Specificity int
+	Specificity int `json:"specificity"`
 
-    EffectiveDate time.Time
-    ExpiresDate   *time.Time
+	EffectiveDate time.Time  `json:"effectiveDate"`
+	ExpiresDate   *time.Time `json:"expiresDate,omitempty"`
 
-    Status string
+	Status string `json:"status"`
 
-    CreatedAt   *time.Time
-    UpdatedAt   *time.Time
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 }
 
 type OverrideFilter struct {
@@ -36,20 +35,28 @@ type OverrideFilter struct {
 	Status   *string
 }
 
-func (o Override) Matches(ctx Context) bool {
-    if o.State != nil && *o.State != ctx.State {
-        return false
-    }
-    if o.Client != nil && *o.Client != ctx.Client {
-        return false
-    }
-    if o.Investor != nil && *o.Investor != ctx.Investor {
-        return false
-    }
-    if o.CaseType != nil && *o.CaseType != ctx.CaseType {
-        return false
-    }
-    return true
+func Matches(selector map[string]string, ctx Context) bool {
+	for k, v := range selector {
+		switch k {
+		case "state":
+			if ctx.State != v {
+				return false
+			}
+		case "client":
+			if ctx.Client != v {
+				return false
+			}
+		case "investor":
+			if ctx.Investor != v {
+				return false
+			}
+		case "caseType":
+			if ctx.CaseType != v {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func (o Override) IsActive(asOf time.Time) bool {
@@ -63,4 +70,8 @@ func (o Override) IsActive(asOf time.Time) bool {
         return false
     }
     return true
+}
+
+func ComputeSpecificity(selector map[string]string) int {
+    return len(selector)
 }

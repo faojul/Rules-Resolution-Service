@@ -48,7 +48,7 @@ func resolveTrait(ctx domain.Context, defaultVal any, overrides []domain.Overrid
     var candidates []domain.Override
 
     for _, o := range overrides {
-        if o.Matches(ctx) && o.IsActive(ctx.AsOfDate) {
+        if domain.Matches(o.Selector, ctx) && o.IsActive(ctx.AsOfDate) {
             candidates = append(candidates, o)
         }
     }

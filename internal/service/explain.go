@@ -55,7 +55,7 @@ func (r *Resolver) explainTrait(
 
     // STEP 1: Filter matching overrides
     for _, o := range overrides {
-        if o.Matches(ctx) && o.IsActive(ctx.AsOfDate) {
+        if domain.Matches(o.Selector, ctx) && o.IsActive(ctx.AsOfDate) {
             candidates = append(candidates, o)
         }
     }
