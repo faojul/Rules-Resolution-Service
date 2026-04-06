@@ -34,16 +34,12 @@ Resolution is based on:
 ---
 
 ## Architecture
-`Handler → Service → Repository → PostgreSQL`
-
-
-- **Handler** → HTTP layer
-- **Service** → business logic
-- **Repository** → DB interaction
-- **Resolver** → core rule evaluation logic
-
----
-
+````bash
+API → Handler → Service → Repository (interface) → Infra (Postgres)
+                    ↓
+                 Domain Layer
+          (Entities, Value Objects, Aggregates, Domain Services)
+````
 ## Setup & Run
 
 ### 1. Clone repository
